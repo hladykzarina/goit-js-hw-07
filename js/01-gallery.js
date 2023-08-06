@@ -21,24 +21,27 @@ const markup = galleryItems
 
 list.insertAdjacentHTML('beforeend', markup);
 
-list.addEventListener('click', onClickGetLargeImage);
+list.addEventListener('click', function (evt) {
+  evt.preventDefault();
+  const target = evt.target;
 
-function onClickGetLargeImage(event) {
-  event.preventDefault();
-  window.addEventListener('keydown', onEscClick);
-  const imgOriginalEl = event.target.dataset.source;
-  console.log(imgOriginalEl);
-  const instance = basicLightbox.create(
-    `<img scr="${imgOriginalEl}" alt="${imgOriginalEl}" width="800" heigth="600">`,
-  );
-  instance.show();
-}
+  if (!evt.target.classList.contains('gallery__image')) {
+    const currentItems = target.closest('.gallery__item');
+    const { source } = target.dataset;
+    const item = galleryItems.find((item) => item.original === source);
 
-function onEscClick(escEvent) {
-  if (escEvent.key === 'Escape') {
-    onModalClose();
+    const instance = basicLightbox.create(
+      `<img scr="${item.original}" alt="${item.description}" width="800" heigth="600">`,
+    );
+    instance.show();
+
+    const escapeWindow = (escEvent) => {
+      if (escEvent.key === 'Escape') {
+        onModalClose();
+      }
+    };
   }
-}
+});
 
 function onModalClose() {
   window.removeEventListener('keydown', onEscClick);
