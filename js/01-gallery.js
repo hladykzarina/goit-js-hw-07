@@ -2,8 +2,6 @@ import { galleryItems } from './gallery-items.js';
 // Change code below this line
 const list = document.querySelector('.gallery');
 
-list.addEventListener('click', onClickGetLargeImage);
-
 const markup = galleryItems
   .map(
     ({ preview, original, description }) => `<li class="gallery_item">
@@ -13,25 +11,31 @@ const markup = galleryItems
         src="${preview}"
         data-source="${original}"
         alt="${description}"
+        width="350"
+        height="auto"
         />
         </a>
         </li>`,
   )
   .join('');
 
-list.insertAjacentHTML('beforeend', markup);
+list.insertAdjacentHTML('beforeend', markup);
+
+list.addEventListener('click', onClickGetLargeImage);
 
 function onClickGetLargeImage(event) {
   event.preventDefault();
   window.addEventListener('keydown', onEscClick);
   const imgOriginalEl = event.target.dataset.source;
   console.log(imgOriginalEl);
-  const instance = basicLightbox.create(`<img scr="${imgOriginalEl}">`);
+  const instance = basicLightbox.create(
+    `<img scr="${imgOriginalEl}" alt="${imgOriginalEl}" width="800" heigth="600">`,
+  );
   instance.show();
 }
 
-function onEscClick(event) {
-  if (event.code === 'Escape') {
+function onEscClick(escEvent) {
+  if (escEvent.key === 'Escape') {
     onModalClose();
   }
 }
